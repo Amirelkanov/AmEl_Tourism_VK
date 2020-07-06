@@ -32,7 +32,12 @@ def get_articles_kb(session, category_id: int, user_id: int):
 
     # Adding articles
     for i, article in enumerate(articles):
-        # f"{article_url}/{article.id}" - ЭТО ССЫЛКА НА ТВОЙ САЙТ
+
+        # keyboard.add_openlink_button(f"{article.title}",
+        #                              link=f"{article_url}/{article.id}")
+        # Пока сайт не будет размещен на платном хостинге,
+        # данная строчка будет закомментирована
+
         keyboard.add_openlink_button(f"{article.title}",
                                      link="https://wikipedia.org/")
 
