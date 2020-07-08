@@ -20,7 +20,7 @@ if __name__ == "__main__":
     global_init(SQLALCHEMY_DATABASE_URI)  # Init DB
 
     # Event loop
-    while True:
+    while 1:
         try:
             for event in longpoll.listen():
 
