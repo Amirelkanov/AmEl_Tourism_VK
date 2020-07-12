@@ -69,6 +69,8 @@ if __name__ == "__main__":
 
                         user.page = user.page - 1 if message_text == "«" \
                             else user.page + 1
+                        session.add(user)
+                        session.commit()
 
                         vk.messages.send(
                             user_id=user_id,
