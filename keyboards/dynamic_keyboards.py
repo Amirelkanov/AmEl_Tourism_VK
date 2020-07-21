@@ -10,6 +10,38 @@ from extensions.const import max_num_of_categories_per_page
 from extensions.formatting_distance import lonlat_distance
 
 
+def get_categories_kb(session, user_id: int):
+    """
+    :param session: SQLAlchemy session object
+    :param user_id: id of current user
+    :return: inline category keyboard
+    """
+
+    keyboard = VkKeyboard()
+
+    # Adding categories
+    categories = sorted(session.query(Category).all(),
+                        key=lambda x: x.name_of_category)
+    page = session.query(VKUserInfo).filter_by(id=user_id).first().page
+
+    for category in categories[max_num_of_categories_per_page * (
+            page - 1):max_num_of_categories_per_page * page]:
+        keyboard.add_button(category.name_of_category)
+        keyboard.add_line()
+
+    # Adding nav arrows
+    if page > 1:
+        keyboard.add_button("«")
+    if ceil(len(categories) / max_num_of_categories_per_page) > page:
+        keyboard.add_button("»")
+
+    # Adding location button
+    keyboard.add_line()
+    keyboard.add_location_button()
+
+    return keyboard.get_keyboard()
+
+
 def get_articles_kb(session, category_id: int, user_id: int):
     """
     :param session: SQLAlchemy session object
@@ -45,35 +77,3 @@ def get_articles_kb(session, category_id: int, user_id: int):
             keyboard.add_line()
 
     return keyboard.get_keyboard(), articles
-
-
-def get_categories_kb(session, user_id: int):
-    """
-    :param session: SQLAlchemy session object
-    :param user_id: id of current user
-    :return: inline category keyboard
-    """
-
-    keyboard = VkKeyboard()
-
-    # Adding categories
-    categories = sorted(session.query(Category).all(),
-                        key=lambda x: x.name_of_category)
-    page = session.query(VKUserInfo).filter_by(id=user_id).first().page
-
-    for category in categories[max_num_of_categories_per_page * (
-            page - 1):max_num_of_categories_per_page * page]:
-        keyboard.add_button(category.name_of_category)
-        keyboard.add_line()
-
-    # Adding nav arrows
-    if page > 1:
-        keyboard.add_button("«")
-    if ceil(len(categories) / max_num_of_categories_per_page) > page:
-        keyboard.add_button("»")
-
-    # Adding location button
-    keyboard.add_line()
-    keyboard.add_location_button()
-
-    return keyboard.get_keyboard()
